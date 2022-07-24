@@ -11,7 +11,7 @@
             <Canvas></Canvas>
           </v-col>
           <v-col cols="3">
-            <SidePanel  style="height: 300px, overflow-y: auto"></SidePanel>
+            <SidePanel></SidePanel>
           </v-col>
         </v-row>
       </v-container>

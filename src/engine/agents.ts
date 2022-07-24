@@ -119,8 +119,8 @@ export class PassiveAgent extends Object3D {
     return input.distanceTo(this.simPosition) < this.radius;
   }
 
-  gravitationalAcceleration (localtion: Vector2): Vector2 {
-    const translation = localtion.clone().sub(this.simPosition).divideScalar(1e3);
+  gravitationalAcceleration (location: Vector2): Vector2 {
+    const translation = location.clone().sub(this.simPosition).divideScalar(1e3);
     const direction = translation.clone().normalize().negate();
 
     return direction.multiplyScalar(this.massGDiv6 / (translation.length() * translation.length()));
