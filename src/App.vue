@@ -1,29 +1,46 @@
 <template>
-  <div id="app">
-    <img alt="Vue logo" src="./assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js + TypeScript App"/>
-  </div>
+  <v-main>
+    <v-app>
+      <v-toolbar max-height="60" class="ma-0" elevation="4">
+        <v-img max-height="50" contain src="./assets/logo.png"></v-img>
+        <SimulationControl></SimulationControl>
+      </v-toolbar>
+      <v-container class="ma-0 pa-0" fluid>
+        <v-row no-gutters>
+          <v-col cols="9">
+            <Canvas></Canvas>
+          </v-col>
+          <v-col cols="3">
+            <SidePanel  style="height: 300px, overflow-y: auto"></SidePanel>
+          </v-col>
+        </v-row>
+      </v-container>
+    </v-app>
+  </v-main>
 </template>
 
 <script lang="ts">
-import { Component, Vue } from 'vue-property-decorator'
-import HelloWorld from './components/HelloWorld.vue'
+import { Component, Vue } from "vue-property-decorator";
+import Canvas from "./components/Canvas.vue";
+import SidePanel from "./components/SidePanel.vue";
+import SimulationControl from "@/components/SimulationControl.vue";
+
+import { initialization } from "@/config/initializer";
 
 @Component({
   components: {
-    HelloWorld
+    Canvas,
+    SidePanel,
+    SimulationControl
   }
 })
-export default class App extends Vue {}
+export default class App extends Vue {
+  mounted () {
+    initialization();
+  }
+}
 </script>
 
 <style lang="scss">
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
-}
+html, body {margin: 0; height: 100%; overflow: hidden}
 </style>
