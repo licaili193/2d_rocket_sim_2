@@ -8,6 +8,7 @@ import { Component, Prop, Vue } from "vue-property-decorator";
 import { AmbientLight, Camera, Clock, Object3D, OrthographicCamera, PointLight, Renderer, Scene, WebGLRenderer } from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import Engine from "@/engine/engine";
+import { MAX_SIM_STEP } from "@/config/config";
 
 import { EventBus } from "@/store/index";
 
@@ -88,9 +89,18 @@ export default class Canvas extends Vue {
     const delta = this.clock.getDelta();
     this.controls.update();
 
+    const inverseZoomLevel = 1 / (this.camera as OrthographicCamera).zoom;
+
+    for (const agent of this.$store.state.activeAgents) {
+      agent.scale.x = inverseZoomLevel;
+      agent.scale.y = inverseZoomLevel;
+      agent.scale.z = inverseZoomLevel;
+    }
+
+    const steps = Math.ceil(delta * this.$store.state.simulatingMultiplier / MAX_SIM_STEP);
     if (this.$store.state.simulating && !this.$store.state.simulationPaused) {
-      this.$store.state.simulationTime += delta * this.$store.state.simulatingMultiplier;
-      Engine.update(this.$store.state.simulationTime, delta * this.$store.state.simulatingMultiplier);
+      this.$store.state.simulationTime += steps * MAX_SIM_STEP;
+      Engine.update(this.$store.state.simulationTime, steps);
     }
 
     this.renderer.render(this.scene, this.camera);

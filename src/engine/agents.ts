@@ -1,6 +1,8 @@
 import { Vector2, Vector3, Object3D } from "three";
 import { G, RENDER_DOWNSCALE, THRUST_THRESHOLD, PI } from "@/config/config";
-import { Profile } from "@/engine/utils";
+import { ActiveAgentAction, Profile } from "@/engine/utils";
+
+import store from "@/store/index";
 
 export class ActiveAgent extends Object3D {
   mass = 1;
@@ -21,7 +23,9 @@ export class ActiveAgent extends Object3D {
   currentThrust = 0;
 
   thrustProfile: Profile = new Profile();
-  grimbleProfile: Profile = new Profile();
+  gimbalProfile: Profile = new Profile();
+
+  actions: Array<ActiveAgentAction> = [];
 
   constructor (mass: number, length: number) {
     super();
@@ -58,11 +62,16 @@ export class ActiveAgent extends Object3D {
     this.active = active;
   }
 
+  getActive () {
+    return this.active;
+  }
+
   // Update mass based on thrust and return the acceleration vector and the angular
   // acceleration from the thrust
   update (currentTime: number, deltaTime: number): [Vector2, number] {
-    const grimbleAngle = this.grimbleProfile.seekForward(currentTime);
-    let thrust = this.thrustProfile.seekForward(currentTime);
+    const offsetTime = currentTime - this.timeOffset;
+    const gimbalAngle = this.gimbalProfile.seekForward(offsetTime);
+    let thrust = this.thrustProfile.seekForward(offsetTime);
     this.currentThrust = thrust;
     if (thrust < 0) {
       thrust = 0;
@@ -79,10 +88,43 @@ export class ActiveAgent extends Object3D {
       }
     }
 
-    const thrustAngle = this.simOrientation.value + grimbleAngle;
+    const thrustAngle = this.simOrientation.value + gimbalAngle;
     const thrustVector = (new Vector2(Math.cos(thrustAngle), Math.sin(thrustAngle))).multiplyScalar(thrust);
 
-    const torque = this.length / 2 * Math.sin(grimbleAngle) * thrustVector.length();
+    const torque = this.length / 2 * Math.sin(gimbalAngle) * thrustVector.length();
+
+    for (const passive of store.state.passiveAgents) {
+      if (passive.inside(this.simPosition)) {
+        this.setActive(false);
+        return [new Vector2(), 0];
+      }
+    }
+
+    while (this.actions.length > 0) {
+      const action = this.actions[0];
+      if (offsetTime > action.time) {
+        this.actions.shift();
+
+        for (const uuid of action.spawnAgents) {
+          const newAgent = store.state.activeAgents.find(item => item.uuid === uuid);
+          if (newAgent) {
+            newAgent.simPosition = this.simPosition.clone();
+            newAgent.simOrientation.value = this.simOrientation.value;
+            newAgent.simVelocity = this.simVelocity.clone();
+            newAgent.simOmega.value = this.simOmega.value;
+            newAgent.syncPosition();
+            newAgent.timeOffset = currentTime;
+            newAgent.setActive(true);
+          }
+        }
+
+        if (action.disableParent) {
+          this.setActive(false);
+        }
+      } else {
+        break;
+      }
+    }
 
     return [thrustVector.divideScalar(this.mass), torque / this.momentOfInertia];
   }
@@ -95,6 +137,7 @@ export class PassiveAgent extends Object3D {
   simPosition: Vector2 = new Vector2(0, 0);
 
   private massGDiv6: number;
+  private collisionShrinkFactor = 10000;
 
   constructor (mass: number, radius: number) {
     super();
@@ -116,7 +159,7 @@ export class PassiveAgent extends Object3D {
   }
 
   inside (input: Vector2): boolean {
-    return input.distanceTo(this.simPosition) < this.radius;
+    return input.distanceTo(this.simPosition) < this.radius - this.collisionShrinkFactor;
   }
 
   gravitationalAcceleration (location: Vector2): Vector2 {

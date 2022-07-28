@@ -82,3 +82,9 @@ export class Profile {
     }
   }
 }
+
+export interface ActiveAgentAction {
+  disableParent: boolean;
+  spawnAgents: Array<string>;
+  time: number;
+}

@@ -32,8 +32,8 @@ export class Rocket extends ActiveAgent {
     this.name = "Rocket";
 
     const geometry = new ConeGeometry(
-      this.visualizationUnit / 50,
       this.visualizationUnit / 10,
+      this.visualizationUnit / 2,
       32
     );
     const material = new MeshPhongMaterial({

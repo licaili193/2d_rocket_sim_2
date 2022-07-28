@@ -4,7 +4,7 @@
       <v-col>
         <v-text-field
           class="mx-2"
-          v-model="content.position.x"
+          v-model.number="content.position.x"
           label="x"
           :disabled="disabled"
           suffix="m"
@@ -15,7 +15,7 @@
       <v-col>
         <v-text-field
           class="mx-2"
-          v-model="content.position.y"
+          v-model.number="content.position.y"
           label="y"
           :disabled="disabled"
           suffix="m"
@@ -28,7 +28,7 @@
       <v-col class="d-flex align-center">
         <v-text-field
           class="mx-2"
-          v-model="angle"
+          v-model.number="angle"
           label="theta"
           :disabled="disabled"
           suffix="deg"
@@ -37,7 +37,7 @@
           max="360"
         ></v-text-field>
         <circle-slider
-          v-model="angle"
+          v-model.number="angle"
           :side="40"
           :min="0"
           :max="360"

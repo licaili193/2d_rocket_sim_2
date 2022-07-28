@@ -15,10 +15,10 @@ interface SimulationSpace {
 }
 
 class Engine {
-  private dt = 0;
-  private dtDiv2 = 0;
-  private dtDiv6 = 0;
-  private dtTimes2 = 0;
+  private dt = MAX_SIM_STEP;
+  private dtDiv2 = MAX_SIM_STEP / 2;
+  private dtDiv6 = MAX_SIM_STEP / 6;
+  private dtTimes2 = MAX_SIM_STEP * MAX_SIM_STEP;
 
   static loadSpace (agent: ActiveAgent): SimulationSpace {
     return {
@@ -40,30 +40,29 @@ class Engine {
     agent.simOmega.value = space.omega;
   }
 
-  update (time: number, deltaTime: number) {
-    if (store.state.simulating && !store.state.simulationPaused) {
-      this.dt = deltaTime;
-      this.dtDiv2 = deltaTime / 2;
-      this.dtDiv6 = deltaTime / 6;
-      this.dtTimes2 = deltaTime * deltaTime;
-
-      for (const agent of store.state.activeAgents) {
-        this.step(time, deltaTime, agent);
+  update (time: number, steps: number) {
+    let hasAcvtiveAgent = false;
+    for (const agent of store.state.activeAgents) {
+      if (agent.getActive()) {
+        this.step(time, MAX_SIM_STEP, steps, agent);
+        hasAcvtiveAgent = true;
       }
+    }
+
+    if (!hasAcvtiveAgent) {
+      store.commit("pauseSimulation");
     }
   }
 
-  private step (time: number, deltaTime: number, agent: ActiveAgent) {
-    let steps = 1;
-    if (deltaTime > MAX_SIM_STEP) {
-      steps = Math.ceil(deltaTime / MAX_SIM_STEP);
-      deltaTime /= steps;
-    }
-
+  private step (time: number, deltaTime: number, steps: number, agent: ActiveAgent) {
     let currentTime = time;
     let space: SimulationSpace = Engine.loadSpace(agent);
 
     while (steps--) {
+      if (!agent.getActive()) {
+        break;
+      }
+
       const [thrustAlpha, thrustOmega] = agent.update(currentTime, deltaTime);
       space = this.stepCore(space, thrustAlpha, thrustOmega);
       currentTime += deltaTime;

@@ -1,6 +1,13 @@
 <template>
   <v-card class="ma-1 pa-1">
     <v-card-title>{{ content.name }}</v-card-title>
+    <v-checkbox
+      v-model="active"
+      label="Active"
+      class="mx-4"
+      :disabled="!enabled"
+      @change="onChangeActive"
+    ></v-checkbox>
     <v-container class="my-2 d-flex align-center">
       <v-text-field
         class="mx-2"
@@ -35,12 +42,12 @@
     </VelocityEditor>
     <v-card-text>Thrust {{ content.currentThrust }}N</v-card-text>
     <Plotly :data="thrustProfileData" :layout="thrustProfileLayout" :display-mode-bar="false"></Plotly>
-    <Plotly :data="grimbleProfileData" :layout="grimbleProfileLayout" :display-mode-bar="false"></Plotly>
+    <Plotly :data="gimbalProfileData" :layout="gimbalProfileLayout" :display-mode-bar="false"></Plotly>
   </v-card>
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue } from "vue-property-decorator";
+import { Component, Prop, Vue, Watch } from "vue-property-decorator";
 import PoseEditor from "@/components/PoseEditor.vue";
 import VelocityEditor from "@/components/VelocityEditor.vue";
 import { Plotly } from "vue-plotly";
@@ -63,10 +70,14 @@ export default class ActiveAgentEditor extends Vue {
 
   thrustProfileData: any = [];
   thrustProfileLayout: any = {};
-  grimbleProfileData: any = [];
-  grimbleProfileLayout: any = {};
+  gimbalProfileData: any = [];
+  gimbalProfileLayout: any = {};
+
+  active = false;
 
   mounted () {
+    this.active = this.content.getActive();
+
     this.thrustProfileData = [{
       x: this.content.thrustProfile.times,
       y: this.content.thrustProfile.values
@@ -102,14 +113,14 @@ export default class ActiveAgentEditor extends Vue {
       height: 200
     };
 
-    this.grimbleProfileData = [{
-      x: this.content.grimbleProfile.times,
-      y: this.content.grimbleProfile.values
+    this.gimbalProfileData = [{
+      x: this.content.gimbalProfile.times,
+      y: this.content.gimbalProfile.values
     }];
 
-    this.grimbleProfileLayout = {
+    this.gimbalProfileLayout = {
       title: {
-        text: "Grimble Profile",
+        text: "Gimbal Profile",
         font: {
           size: 12
         }
@@ -121,7 +132,7 @@ export default class ActiveAgentEditor extends Vue {
         t: 20
       },
       yaxis: {
-        title: "Grimble [Rad]",
+        title: "Gimbal [Rad]",
         showgrid: true,
         zeroline: false,
         showline: false,
@@ -140,6 +151,15 @@ export default class ActiveAgentEditor extends Vue {
 
   onChangePosition () {
     this.content.syncPosition();
+  }
+
+  onChangeActive () {
+    this.content.setActive(this.active);
+  }
+
+  @Watch("content.active")
+  onInputActiveChange () {
+    this.active = this.content.getActive();
   }
 }
 </script>
