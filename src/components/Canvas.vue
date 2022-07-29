@@ -1,5 +1,11 @@
 <template>
-  <div ref="viewport" class="canvas"></div>
+  <div>
+    <div ref="viewport" class="canvas"></div>
+    <div class="screen-quad">
+      <hr style="width: 100px">
+      {{ruler}} km
+    </div>
+  </div>
 </template>
 
 <script lang="ts">
@@ -8,7 +14,7 @@ import { Component, Prop, Vue } from "vue-property-decorator";
 import { AmbientLight, Camera, Clock, Object3D, OrthographicCamera, PointLight, Renderer, Scene, WebGLRenderer } from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import Engine from "@/engine/engine";
-import { MAX_SIM_STEP } from "@/config/config";
+import { MAX_SIM_STEP, RENDER_DOWNSCALE, EARTH_RADUIS } from "@/config/config";
 
 import { EventBus } from "@/store/index";
 
@@ -27,6 +33,8 @@ export default class Canvas extends Vue {
   private clock: Clock = new Clock(true);
   private time: Date = new Date();
 
+  ruler = 100;
+
   constructor () {
     super();
 
@@ -40,6 +48,8 @@ export default class Canvas extends Vue {
     this.controls.enableRotate = false;
     this.controls.enableDamping = true;
     this.controls.dampingFactor = 0.2;
+    this.controls.minZoom = 0.1;
+    this.controls.maxZoom = 150;
   }
 
   mounted () {
@@ -90,6 +100,7 @@ export default class Canvas extends Vue {
     this.controls.update();
 
     const inverseZoomLevel = 1 / (this.camera as OrthographicCamera).zoom;
+    this.ruler = Math.ceil(RENDER_DOWNSCALE / 100 * inverseZoomLevel * 1.14285714);
 
     for (const agent of this.$store.state.activeAgents) {
       agent.scale.x = inverseZoomLevel;
@@ -99,8 +110,9 @@ export default class Canvas extends Vue {
 
     const steps = Math.ceil(delta * this.$store.state.simulatingMultiplier / MAX_SIM_STEP);
     if (this.$store.state.simulating && !this.$store.state.simulationPaused) {
-      this.$store.state.simulationTime += steps * MAX_SIM_STEP;
-      Engine.update(this.$store.state.simulationTime, steps);
+      Engine.update(this.$store.state.simulationStep, steps);
+      this.$store.state.simulationStep += steps;
+      this.$store.state.simulationTime = this.$store.state.simulationStep * MAX_SIM_STEP;
     }
 
     this.renderer.render(this.scene, this.camera);
@@ -124,5 +136,13 @@ export default class Canvas extends Vue {
   height: calc(100vh - 60px);
   width: 100%;
   margin: 0;
+}
+
+.screen-quad {
+  display: block;
+  position: absolute;
+  top: 120px;
+  left: 40px;
+  color: white;
 }
 </style>

@@ -13,7 +13,8 @@ export default new Vuex.Store({
     simulating: false,
     simulationPaused: false,
     simulatingMultiplier: 1,
-    simulationTime: 0
+    simulationTime: 0,
+    simulationStep: 0
   },
   getters: {
   },
@@ -38,12 +39,14 @@ export default new Vuex.Store({
       state.simulating = true;
       state.simulationPaused = false;
       state.simulationTime = 0;
+      state.simulationStep = 0;
       EventBus.$emit("startSimulation");
     },
     stopSimulation (state) {
       state.simulating = false;
       state.simulationPaused = false;
       state.simulationTime = 0;
+      state.simulationStep = 0;
       EventBus.$emit("stopSimulation");
 
       for (const agent of state.activeAgents) {

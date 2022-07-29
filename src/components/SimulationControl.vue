@@ -114,7 +114,7 @@
       </template>
       <span>Play</span>
     </v-tooltip>
-    <v-card-text>Time: {{$store.state.simulationTime}} s</v-card-text>
+    <v-card-text>Time: {{$store.state.simulationTime.toFixed(1)}} s</v-card-text>
   </v-container>
 </template>
 

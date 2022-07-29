@@ -86,6 +86,8 @@ export class ActiveAgent extends Object3D {
         this.mass -= deltaTime * this.massDeclineRate;
         this.momentOfInertia = this.mass * this.length * this.length / 12;
       }
+    } else {
+      this.thrusting = false;
     }
 
     const thrustAngle = this.simOrientation.value + gimbalAngle;
@@ -127,6 +129,10 @@ export class ActiveAgent extends Object3D {
     }
 
     return [thrustVector.divideScalar(this.mass), torque / this.momentOfInertia];
+  }
+
+  updateAnimation () {
+    // Override in child classes
   }
 }
 

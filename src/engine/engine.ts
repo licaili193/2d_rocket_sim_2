@@ -40,11 +40,11 @@ class Engine {
     agent.simOmega.value = space.omega;
   }
 
-  update (time: number, steps: number) {
+  update (startingStep: number, steps: number) {
     let hasAcvtiveAgent = false;
     for (const agent of store.state.activeAgents) {
       if (agent.getActive()) {
-        this.step(time, MAX_SIM_STEP, steps, agent);
+        this.step(startingStep, steps, MAX_SIM_STEP, agent);
         hasAcvtiveAgent = true;
       }
     }
@@ -54,22 +54,24 @@ class Engine {
     }
   }
 
-  private step (time: number, deltaTime: number, steps: number, agent: ActiveAgent) {
-    let currentTime = time;
-    let space: SimulationSpace = Engine.loadSpace(agent);
+  private step (startingStep: number, steps: number, deltaTime: number, agent: ActiveAgent) {
+    let currentStep = startingStep;
 
     while (steps--) {
       if (!agent.getActive()) {
         break;
       }
 
+      const currentTime = currentStep * deltaTime;
+      let space: SimulationSpace = Engine.loadSpace(agent);
       const [thrustAlpha, thrustOmega] = agent.update(currentTime, deltaTime);
       space = this.stepCore(space, thrustAlpha, thrustOmega);
-      currentTime += deltaTime;
+      Engine.setSpace(space, agent);
+      currentStep++;
     }
 
-    Engine.setSpace(space, agent);
     agent.syncPosition();
+    agent.updateAnimation();
   }
 
   private acceleration (position: Vector2, thrustAlpha: Vector2): [number, number] {
