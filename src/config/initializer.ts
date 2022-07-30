@@ -26,17 +26,17 @@ function initDefault () {
   // First stage remain
   const rocket2 = new Rocket(195000, 75);
   rocket2.setActive(false);
-  rocket2.name = "Second Stage";
+  rocket2.name = "First Stage - remaining";
 
   // Second stage
   const rocket3 = new Rocket(5000, 25);
   rocket3.minMass = 2000;
   rocket3.massDeclineRate = 20;
   rocket3.thrustProfile.addPoints([
-    [0.01, 30000], [3, 70000], [35, 75000], [200, 50000], [201, 0], [301, 0], [301, 20000], [535, 50000], [600, 0]
+    [0.01, 30000], [3, 70000], [35, 75000], [200, 50000], [201, 0], [300, 0], [301, 20000], [535, 50000], [600, 0]
   ]);
   rocket3.setActive(false);
-  rocket3.name = "First Stage - remaining";
+  rocket3.name = "Second Stage";
 
   rocket.actions.push({
     disableParent: true,
