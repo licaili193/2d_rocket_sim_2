@@ -14,7 +14,9 @@ export default new Vuex.Store({
     simulationPaused: false,
     simulatingMultiplier: 1,
     simulationTime: 0,
-    simulationStep: 0
+    simulationStep: 0,
+    presets: [],
+    presetLoadingIndex: 0
   },
   getters: {
   },

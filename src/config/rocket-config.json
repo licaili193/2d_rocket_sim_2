@@ -1,0 +1,140 @@
+[
+  {
+    "configName": "Default Rocket",
+    "activeAgents": [
+      {
+        "id": 1,
+        "rocket": {
+          "name": "First Stage",
+          "mass": 500000,
+          "length": 100,
+          "minMass": 200000,
+          "massDeclineRate": 1000,
+          "initialPosition": {
+            "x": 0,
+            "y": 6371000
+          },
+          "initialOrientation": 1.57079633,
+          "initialActive": true,
+          "thrustProfile": [
+            {
+              "time": 0.01,
+              "thrust": 3000000
+            },
+            {
+              "time": 20,
+              "thrust": 7000000
+            },
+            {
+              "time": 60,
+              "thrust": 7500000
+            },
+            {
+              "time": 120,
+              "thrust": 5000000
+            },
+            {
+              "time": 121,
+              "thrust": 0
+            }
+          ],
+          "gimbalProfile": [
+            {
+              "time": 0,
+              "angle": 0
+            },
+            {
+              "time": 5,
+              "angle": 0
+            },
+            {
+              "time": 5.5,
+              "angle": 0.00872664626
+            },
+            {
+              "time": 6,
+              "angle": 0
+            },
+            {
+              "time": 10,
+              "angle": 0
+            },
+            {
+              "time": 10.5,
+              "angle": 0.00872664626
+            },
+            {
+              "time": 11,
+              "angle": 0
+            }
+          ],
+          "actions": [
+            {
+              "disableParent": true,
+              "spawnAgents": [2, 3],
+              "time": 130
+            }
+          ]
+        }
+      },
+      {
+        "id": 2,
+        "rocket": {
+          "name": "First Stage - remaining",
+          "mass": 195000,
+          "length": 75,
+          "initialActive": false
+        }
+      },
+      {
+        "id": 3,
+        "rocket": {
+          "name": "Second Stage",
+          "mass": 5000,
+          "length": 25,
+          "minMass": 2000,
+          "massDeclineRate": 20,
+          "initialActive": false,
+          "thrustProfile": [
+            {
+              "time": 0.01,
+              "thrust": 30000
+            },
+            {
+              "time": 3,
+              "thrust": 70000
+            },
+            {
+              "time": 35,
+              "thrust": 75000
+            },
+            {
+              "time": 200,
+              "thrust": 50000
+            },
+            {
+              "time": 201,
+              "thrust": 0
+            },
+            {
+              "time": 300,
+              "thrust": 0
+            },
+            {
+              "time": 301,
+              "thrust": 20000
+            },
+            {
+              "time": 535,
+              "thrust": 50000
+            },
+            {
+              "time": 600,
+              "thrust": 0
+            }
+          ]
+        }
+      }
+    ]
+  }
+]

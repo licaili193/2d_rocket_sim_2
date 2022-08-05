@@ -37,6 +37,7 @@
       <v-tab-item>
         <v-card flat class="scrollable">
           <v-card-text>Presets</v-card-text>
+          <PresetEditor></PresetEditor>
         </v-card>
       </v-tab-item>
     </v-tabs>
@@ -47,11 +48,13 @@
 import { Component, Prop, Vue } from "vue-property-decorator";
 import ActiveAgentEditor from "@/components/ActiveAgentEditor.vue";
 import PassiveAgentEditor from "@/components/PassiveAgentEditor.vue";
+import PresetEditor from "@/components/PresetEditor.vue";
 
 @Component({
   components: {
     PassiveAgentEditor,
-    ActiveAgentEditor
+    ActiveAgentEditor,
+    PresetEditor
   }
 })
 export default class SidePanel extends Vue {

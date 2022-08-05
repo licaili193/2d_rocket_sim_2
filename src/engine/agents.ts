@@ -134,6 +134,40 @@ export class ActiveAgent extends Object3D {
   updateAnimation () {
     // Override in child classes
   }
+
+  // Note: this method cannot load actions
+  loadFromJSON (json: any) {
+    this.mass = json.mass ?? 1;
+    this.minMass = json.minMass;
+    this.massDeclineRate = json.massDeclineRate;
+    this.length = json.length ?? 1;
+    this.momentOfInertia = this.mass * this.length * this.length / 12;
+    if (json.initialPosition) {
+      this.simPosition = new Vector2(json.initialPosition.x, json.initialPosition.y);
+    }
+    if (json.initialOrientation) {
+      this.simOrientation.value = json.initialOrientation;
+    }
+    if (json.initialVelocity) {
+      this.simVelocity = new Vector2(json.initialVelocity.x, json.initialVelocity.y);
+    }
+    if (json.initialOmega) {
+      this.simOmega.value = json.initialOmega;
+    }
+    this.syncPosition();
+    if (json.thrustProfile) {
+      for (const { time, thrust } of json.thrustProfile) {
+        this.thrustProfile.addPoint(time, thrust);
+      }
+    }
+    if (json.gimbalProfile) {
+      for (const { time, angle } of json.gimbalProfile) {
+        this.gimbalProfile.addPoint(time, angle);
+      }
+    }
+    this.active = json.initialActive === true;
+    this.name = json.name ?? "";
+  }
 }
 
 export class PassiveAgent extends Object3D {
