@@ -17,15 +17,17 @@ User can use this project to estimate the orbit of a rocket or a satllite and pr
 ### Programming Language and Frame
 This project uses JavaScript and the library vue as frame.
 
-![alt text](resources/JavaScript-1.jpeg)
-![alt text](resources/Vue.jpeg)
+<img src="resources/JavaScript-1.jpeg" alt="drawing" width="200"/>
+<br>
+<img src="resources/Vue.jpeg" alt="drawing" width="200"/>
+
 ### Core Algorithm
 The project mainly use four stage Runge-Kutta method to solve the differential equations by the following codes.
 
 ![alt text](resources/equation2.png)
 
 ### structure of the project
-This project mainly have two parts: several class designed for visualize and solving the differential equations and the basic structure of vue library. There is several classes including  `Engine` , `ActiveAgent` , `PasiveAgent` , `rocekt` and so on. These classes allow the project to detect wheter the simulation progress is over and also allow users to change the initial condition of spacecraft and set more complex actions like designing a multistage rocket and have functions to seperate different stages which will keep simulate the orbit of remainings.
+This project mainly have two parts: several class designed for visualize and solving the differential equations and the basic structure of vue library. There is several classes including `Engine`, `ActiveAgent`, `PasiveAgent`, `rocekt` and so on. These classes allow the project to detect wheter the simulation progress is over and also allow users to change the initial condition of spacecraft and set more complex actions like designing a multistage rocket and have functions to seperate different stages which will keep simulate the orbit of remainings.
 
 ## Block Diagram
 ![alt text](resources/block-diagram.png)
