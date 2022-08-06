@@ -14,7 +14,9 @@ export default new Vuex.Store({
     simulationPaused: false,
     simulatingMultiplier: 1,
     simulationTime: 0,
-    simulationStep: 0
+    simulationStep: 0,
+    presets: [],
+    presetLoadingIndex: 0
   },
   getters: {
   },
@@ -24,7 +26,7 @@ export default new Vuex.Store({
       EventBus.$emit("addObject", agent);
     },
     removePassiveAgent (state, agent: PassiveAgent) {
-      agent.removeFromParent();
+      agent.cleanUp();
       state.passiveAgents = state.passiveAgents.filter(item => item.uuid !== agent.uuid);
     },
     addActiveAgent (state, agent: ActiveAgent) {
@@ -32,7 +34,7 @@ export default new Vuex.Store({
       EventBus.$emit("addObject", agent);
     },
     removeActiveAgent (state, agent: ActiveAgent) {
-      agent.removeFromParent();
+      agent.cleanUp();
       state.activeAgents = state.activeAgents.filter(item => item.uuid !== agent.uuid);
     },
     startSimulation (state) {
@@ -50,11 +52,11 @@ export default new Vuex.Store({
       EventBus.$emit("stopSimulation");
 
       for (const agent of state.activeAgents) {
-        agent.removeFromParent();
+        agent.cleanUp();
       }
       state.activeAgents = [];
       for (const agent of state.passiveAgents) {
-        agent.removeFromParent();
+        agent.cleanUp();
       }
       state.passiveAgents = [];
 

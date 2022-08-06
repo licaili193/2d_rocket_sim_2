@@ -1,7 +1,6 @@
-import { Mesh, ConeGeometry, SphereGeometry, MeshPhongMaterial } from "three";
-
+import { Mesh, BufferGeometry, ConeGeometry, SphereGeometry, MeshPhongMaterial, Line, Vector3, LineBasicMaterial } from "three";
 import { ActiveAgent, PassiveAgent } from "@/engine/agents";
-import { EARTH_COLOR, EARTH_MASS, EARTH_RADUIS, RENDER_DOWNSCALE, PI } from "@/config/config";
+import { EARTH_COLOR, EARTH_MASS, EARTH_RADUIS, RENDER_DOWNSCALE, PI, MAX_TRACE_NUM, TRACE_SEPARATE_THRESHOLD } from "@/config/config";
 
 export class Earth extends PassiveAgent {
   private sphere: Mesh;
@@ -19,6 +18,10 @@ export class Earth extends PassiveAgent {
 
     this.add(this.sphere);
   }
+
+  cleanUp () {
+    this.removeFromParent();
+  }
 }
 
 export class Rocket extends ActiveAgent {
@@ -26,6 +29,12 @@ export class Rocket extends ActiveAgent {
   private sphere: Mesh;
 
   private visualizationUnit = EARTH_RADUIS / RENDER_DOWNSCALE;
+
+  private tracePoints: Array<Vector3> = [];
+  private trace: Line = new Line(
+    new BufferGeometry(),
+    new LineBasicMaterial({ color: 0xFFFFFF, linewidth: 20 })
+  );
 
   constructor (mass: number, length: number) {
     super(mass, length);
@@ -55,6 +64,8 @@ export class Rocket extends ActiveAgent {
     this.sphere = new Mesh(geometry2, material2);
     this.sphere.visible = true;
 
+    this.trace.visible = false;
+
     this.add(this.cone);
     this.add(this.sphere);
   }
@@ -72,9 +83,36 @@ export class Rocket extends ActiveAgent {
       } else {
         this.sphere.visible = false;
       }
+
+      if (!this.tracePoints.length) {
+        this.tracePoints.push(this.position.clone());
+      } else {
+        if (
+          this.tracePoints[this.tracePoints.length - 1].distanceTo(this.position) >
+          TRACE_SEPARATE_THRESHOLD / RENDER_DOWNSCALE
+        ) {
+          if (this.tracePoints.length > MAX_TRACE_NUM) {
+            this.tracePoints.shift();
+          }
+          this.tracePoints.push(this.position.clone());
+        }
+      }
     } else {
       this.cone.visible = false;
       this.sphere.visible = false;
     }
+
+    if (this.tracePoints.length > 0) {
+      if (!this.trace.parent) {
+        this.parent?.add(this.trace);
+      }
+      this.trace.geometry = new BufferGeometry().setFromPoints(this.tracePoints);
+      this.trace.visible = true;
+    }
+  }
+
+  cleanUp () {
+    this.removeFromParent();
+    this.trace.removeFromParent();
   }
 }
