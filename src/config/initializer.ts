@@ -54,6 +54,4 @@ export function initialization () {
   store.commit("addPassiveAgent", earth);
 
   initFromJSON(store.state.presets[store.state.presetLoadingIndex]);
-
-  console.log(store.state.activeAgents);
 }

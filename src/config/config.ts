@@ -9,3 +9,6 @@ export const EARTH_COLOR = 0x008ECC;
 
 export const MAX_SIM_STEP = 0.1;
 export const THRUST_THRESHOLD = 1000;
+
+export const MAX_TRACE_NUM = 1000;
+export const TRACE_SEPARATE_THRESHOLD = 10000;

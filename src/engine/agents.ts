@@ -135,6 +135,10 @@ export class ActiveAgent extends Object3D {
     // Override in child classes
   }
 
+  cleanUp () {
+    // Override in child classes
+  }
+
   // Note: this method cannot load actions
   loadFromJSON (json: any) {
     this.mass = json.mass ?? 1;
@@ -207,5 +211,9 @@ export class PassiveAgent extends Object3D {
     const direction = translation.clone().normalize().negate();
 
     return direction.multiplyScalar(this.massGDiv6 / (translation.length() * translation.length()));
+  }
+
+  cleanUp () {
+    // Override in child classes
   }
 }
