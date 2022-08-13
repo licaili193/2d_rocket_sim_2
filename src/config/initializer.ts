@@ -53,7 +53,7 @@ function initDefault2 () {
   // Combined stage,first
   const rocket = new Rocket(851800, 56.97);
   rocket.minMass = 280600;
-  rocket.massDeclineRate = 3646.1;
+  rocket.massDeclineRate = 4646.1;
   rocket.setPosition(new Vector2(0, EARTH_RADUIS));
   rocket.setOrientation(PI / 2);
   rocket.setActive(true);
@@ -73,7 +73,7 @@ function initDefault2 () {
     [0, 1400000], [307, 1400000], [308, 0]
   ]);
   rocket5.gimbalProfile.addPoints([
-    [0, 0], [10, 0], [10.5, -3.5 * PI / 180], [11, 0], [200, 0], [201, -0.5 * PI / 180], [202, 0]
+    [0, 0], [10, 0], [10.5, -3.5 * PI / 180], [11, 0], [200, 0], [201, -0.3 * PI / 180], [202, 0]
   ]);
   rocket5.setActive(false);
   rocket5.name = "rocket core";
@@ -88,10 +88,10 @@ function initDefault2 () {
   rocket3.minMass = 9400;
   rocket3.massDeclineRate = 44.01;
   rocket3.thrustProfile.addPoints([
-    [0, 0], [3, 176720], [358, 176720], [948, 176720], [1290, 176720], [1294, 0]
+    [0, 0], [3, 176720], [358, 176720], [900, 176720], [910, 176720], [920, 0]
   ]);
   rocket3.gimbalProfile.addPoints([
-    [0, 0], [4, 0], [5, -0.1 * PI / 180], [6, 0]
+    [0, 0], [4, 0], [4.5, -1.6 * PI / 180], [5, 0], [19, 0], [19.5, 1.5 * PI / 180], [20, 0], [500, 0], [501, -0.1 * PI / 180], [502, 0], [700, 0], [701, 0.5 * PI / 180], [702, 0], [737, 0], [738, -0.8 * PI / 180], [739, 0]
   ]);
   rocket3.setActive(false);
   rocket3.name = "second stage and ssatellite";
@@ -124,7 +124,7 @@ function initDefault2 () {
   rocket5.actions.push({
     disableParent: true,
     spawnAgents: [rocket3.uuid, rocket2.uuid],
-    time: 290
+    time: 270
   });
   // second stage seperation
   rocket3.actions.push({
@@ -156,4 +156,13 @@ export function initialization () {
 
   initFromJSON(store.state.presets[store.state.presetLoadingIndex]);
 }
+*/
+
+// the problem is to avoid spin of rocket because there is no PID controller in the rocket.
+// it can be change in the about 1000s where the rocket is about vertical to the orbit.
+// let it turns up and with the speed, it can easily go into the orbit
+/*
+rocket3.gimbalProfile.addPoints([
+    [0, 0], [4, 0], [4.5, -1.6 * PI / 180], [5, 0], [19, 0], [19.5, 1.5 * PI / 180], [20, 0], [500, 0], [501, -0.1 * PI / 180], [502, 0], [700, 0], [701, 0.5 * PI / 180], [702, 0], [725, 0], [726, -0.8 * PI / 180], [727, 0]
+  ]);
 */
