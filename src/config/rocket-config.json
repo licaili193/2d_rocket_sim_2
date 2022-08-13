@@ -150,7 +150,7 @@
           "massDeclineRate":4646.1,
           "initialPosition":{
             "x":0,
-            "y":637100
+            "y":6371000
           },
           "initialOrientation":1.57079633,
           "initialActive":true,
@@ -195,7 +195,7 @@
             },
             {
               "time":111,
-              "angle":0.01918116848
+              "angle":-0.01918116848
             },
             {
               "time":111.5,
@@ -209,9 +209,7 @@
               "time":173
             }
           ]
-
         }
-        
       },
       {
         "id":5,
@@ -301,6 +299,7 @@
           "minMass":9400,
           "massDeclineRate":44.01,
           "initialActive":false,
+          "length":11.54,
           "thrustProfile":[
             {
               "time":0,
@@ -354,11 +353,11 @@
             },
             {
               "time":501,
-              "angle":0.001745329252
+              "angle":-0.001745329252
             },
             {
               "time":502,
-              "thrust":0
+              "angle":0
             },
             {
               "time":700,

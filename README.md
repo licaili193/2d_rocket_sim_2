@@ -62,7 +62,7 @@ Usesrs can set their sattlites' initial condition in the pannels on the right an
 This project provide users some ways to expand project or save some of the designs they made. Users can add their own designs in ```rocket-config.json```, setting up a new object containing all information.  
 
 ### Lints and fixes files
-Save the file and it may return some errors about typing problems. Users can just type the code below and 
+Save the file and it may return some errors about typing problems. Users can just run the code below
 ```
 npm run lint
 ```
